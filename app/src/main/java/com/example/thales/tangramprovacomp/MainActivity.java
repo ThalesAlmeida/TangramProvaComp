@@ -58,53 +58,55 @@ class Renderizador implements GLSurfaceView.Renderer
 
         //Triangulo Rosa
         // triangulo.setPosXY(largura,altura);
-        triangulo0.setMover(largura/6,altura/4);
+        triangulo0.setMover(900,870);
         float cor[]={1.0f,0.0f,1.0f};
         triangulo0.setCor(cor);
         float escala[]= {0.5f,0.5f,0.5f};
-        triangulo0.setAngulo(-135);
+        triangulo0.setAngulo(90);
         //triangulo.setEscala(escala);
 
         //Triangulo vermelho
-        triangulo1.setMover(largura/2,altura/2);
+        triangulo1.setMover(510,600);
         float cor2[]={1.0f,0.0f,0.0f};
         triangulo1.setCor(cor2);
-        triangulo1.setAngulo(270);
+        triangulo1.setAngulo(135);
 
         //Triangulo verde pequeno
-        triangulo2.setMover(largura/2+largura/8,altura/2+altura/10);
+        triangulo2.setMover(600,300);
         float cor3[]={0.0f,1.0f,0.0f};
         triangulo2.setCor(cor3);
         float escala2[]= {0.5f,0.5f,0.5f};
-        triangulo2.setAngulo(180);
+        triangulo2.setAngulo(90);
         triangulo2.setEscala(escala2);
 
         //Triangulo azul
-        triangulo3.setMover(largura-largura/4,altura/4+50);
+        triangulo3.setMover(495,300);
         float escala3[]= {0.75f,0.75f,0.75f};
         float cor4[]={0.0f,0.0f,1.0f};
         triangulo3.setCor(cor4);
         triangulo3.setEscala(escala3);
-        triangulo3.setAngulo(270);
+        triangulo3.setAngulo(-45);
 
-        //Triangulo amarelo
-        triangulo4.setMover(largura/2,altura/2);
+        //Triangulo amarelo pequeno
+        triangulo4.setMover(500,750);
         float cor5[]={1.0f,1.0f,0.0f};
         triangulo4.setCor(cor5);
         triangulo4.setEscala(escala);
         triangulo4.setAngulo(90);
 
         //Quadrado preto
-        quadrado.setMover(largura-largura/4,altura/2);
+        quadrado.setMover(780,750);
         float corQuadrado[]= {0,0,0};
         quadrado.setCor(corQuadrado);
         quadrado.setEscala(escala);
 
         //Trapezio cor aleatória
-        trapezio.setMover(largura/2,altura/4+75);
+        trapezio.setMover(300,300);
         float corTrapezio[]= {(float)Math.random(),(float) Math.random(),(float) Math.random()};
         trapezio.setCor(corTrapezio);
         trapezio.setEscala(escala);
+        trapezio.setInverter(true);
+        trapezio.setAngulo(45);
 
         vrOpenGL.glMatrixMode(GL10.GL_PROJECTION);
         vrOpenGL.glLoadIdentity();  // carrega a matriz identidade para tirar o lixo da memoria
@@ -119,13 +121,13 @@ class Renderizador implements GLSurfaceView.Renderer
 
     public void onDrawFrame(GL10 vrOpengl) {
         vrOpengl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-        //triangulo0.desenha(vrOpengl);
+        triangulo0.desenha(vrOpengl);
 
-        //triangulo1.desenha(vrOpengl);
-        //triangulo2.desenha(vrOpengl);
+        triangulo1.desenha(vrOpengl);
+        triangulo2.desenha(vrOpengl);
         triangulo3.desenha(vrOpengl);
-        //triangulo4.desenha(vrOpengl);
-        //quadrado.desenha(vrOpengl);
+        triangulo4.desenha(vrOpengl);
+        quadrado.desenha(vrOpengl);
         trapezio.desenha(vrOpengl);
 
     }

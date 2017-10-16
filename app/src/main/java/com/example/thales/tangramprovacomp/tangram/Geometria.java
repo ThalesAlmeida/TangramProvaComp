@@ -18,6 +18,15 @@ public abstract class Geometria {
     private float angulo=0;
     private float cor[]={0,0,0};
     private float escala[]={1,1,1};
+    private boolean inverter;
+
+    public boolean isInverter() {
+        return inverter;
+    }
+
+    public void setInverter(boolean inverter) {
+        this.inverter = inverter;
+    }
 
     public void setAngulo (float angulo)
     {
@@ -75,6 +84,7 @@ public abstract class Geometria {
         vrOpenGL.glLoadIdentity();
         vrOpenGL.glTranslatef(getMovX(), getMovY(), 0);
         vrOpenGL.glRotatef(getAngulo(), 0,0,1);
+        if(inverter) vrOpenGL.glRotatef(180,1,0,0);
         vrOpenGL.glColor4f(this.cor[0],this.cor[1],this.cor[2],1);
         vrOpenGL.glScalef(this.escala[0],this.escala[1],1);
         vrOpenGL.glVertexPointer(2,GL10.GL_FLOAT,0,getBuffer());
