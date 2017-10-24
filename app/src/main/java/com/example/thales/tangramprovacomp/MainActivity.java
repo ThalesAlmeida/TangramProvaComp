@@ -1,5 +1,10 @@
 package com.example.thales.tangramprovacomp;
+import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView;
+import android.opengl.GLU;
+import android.opengl.GLUtils;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,17 +25,21 @@ import javax.microedition.khronos.opengles.GL10;
 class Renderizador implements GLSurfaceView.Renderer
 {
 
-    int iFPS;
-    long tempoInicial=0;
-    long tempoAtual=0;
-    float PosX=000,PosY=000;
-    float PosLargura,PosAltura;
-    int dir=1,dir2=1;
-    float angulo=1;
-    int lado=200,H=600;
     Triangulo triangulo0,triangulo1,triangulo2,triangulo3,triangulo4;
     Quadrado quadrado=null;
     Trapezio trapezio= null;
+
+    //Atributo Activity
+    Activity vrActivity = null;
+
+    public Renderizador(){
+
+    }
+
+    public Renderizador(Activity vrActivity){
+        this.vrActivity = vrActivity;
+    }
+
     @Override
     //será chamado quando o aplicativo for criado, 1 vez só
     public void onSurfaceCreated(GL10 vrOpengl, EGLConfig eglConfig) {
@@ -41,12 +50,10 @@ class Renderizador implements GLSurfaceView.Renderer
     //Vai ser chamada quando a superficie mudar
     public void onSurfaceChanged(GL10 vrOpenGL, int largura, int altura) {
 
-
         //configura a cor que sera utilizada para limpar o fundo da tela
         vrOpenGL.glClearColor(1.0f,1.0f,1.0f,1.0f);
         //Configura a area de visualização utilizada na tela do aparelho
         vrOpenGL.glViewport(0,0,largura,altura);
-
 
         triangulo0= new Triangulo(largura, largura);
         triangulo1= new Triangulo(largura, largura);
@@ -95,10 +102,11 @@ class Renderizador implements GLSurfaceView.Renderer
         triangulo4.setAngulo(90);
 
         //Quadrado preto
-        quadrado.setMover(780,750);
-        float corQuadrado[]= {0,0,0};
+        quadrado.setMover(650,650);
+        float corQuadrado[]= {1,0,0};
         quadrado.setCor(corQuadrado);
         quadrado.setEscala(escala);
+        quadrado.setAngulo(45);
 
         //Trapezio cor aleatória
         trapezio.setMover(300,300);
@@ -115,21 +123,55 @@ class Renderizador implements GLSurfaceView.Renderer
         vrOpenGL.glLoadIdentity();
         vrOpenGL.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 
+        int desenho = desenhaTextura(vrOpenGL);
+
     }
 
     @Override
 
     public void onDrawFrame(GL10 vrOpengl) {
         vrOpengl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-        triangulo0.desenha(vrOpengl);
+        //triangulo0.desenha(vrOpengl);
 
-        triangulo1.desenha(vrOpengl);
-        triangulo2.desenha(vrOpengl);
-        triangulo3.desenha(vrOpengl);
-        triangulo4.desenha(vrOpengl);
+        //triangulo1.desenha(vrOpengl);
+        //triangulo2.desenha(vrOpengl);
+        //triangulo3.desenha(vrOpengl);
+        //triangulo4.desenha(vrOpengl);
         quadrado.desenha(vrOpengl);
-        trapezio.desenha(vrOpengl);
+        //trapezio.desenha(vrOpengl);
+        desenhaTextura(vrOpengl);
 
+    }
+
+    public int desenhaTextura(GL10 vrOpengl){
+        //Criar o vetor resposável pelo armazenamento do código da textura
+        int [] contextura = new int[1];
+
+        //Aponta a máquina OpenGL para a memória a ser trabalhada
+        vrOpengl.glBindTexture(GL10.GL_TEXTURE_2D, contextura[0]);
+
+        //Carregar a imagem na memória RAM
+        Bitmap vrImage = BitmapFactory.decodeResource(vrActivity.getResources(), R.mipmap.smile);
+        //Solicitar a geração do código para a memória RAM
+        vrOpengl.glGenTextures(1, contextura, 0);
+
+        vrOpengl.glBindTexture(GL10.GL_TEXTURE_2D, contextura[0]);
+
+        //Copiar  a imagem da RAM para a VRAM
+        GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, vrImage,0);
+
+        //Configura os filtros de imagem
+        vrOpengl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
+
+        vrOpengl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_NEAREST);
+
+        //Retira o apontador OpenGL da área de memória
+        vrOpengl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
+
+        //Libera a memória da imagem na RAM
+        vrImage.recycle();
+
+        return contextura[0];
     }
 
 }
@@ -138,12 +180,13 @@ public class MainActivity extends AppCompatActivity {
     //Cria uma variavel de referencia para a OpenGL
     GLSurfaceView superficieDesenho=null;
     Renderizador render=null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Valida a variavel de referencia com uma instancia da superficie
         superficieDesenho=new GLSurfaceView(this);
-        render= new Renderizador();
+        render= new Renderizador(this);
         //Ligando classe
         superficieDesenho.setRenderer(render);
         //Configura a tela do aparelho para mostrar a sup. de desenho
@@ -152,4 +195,5 @@ public class MainActivity extends AppCompatActivity {
         Log.i("FPS","Alguma coisa");
 
     }
+
 }
